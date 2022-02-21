@@ -1,0 +1,22 @@
+---
+- hosts: all
+  ignore_errors: no
+  become: yes
+  tasks: 
+    - name: create user
+      user: 
+        name: Ini
+        comment: Ini Akeem 
+
+    - name: create directory
+      file: 
+        path: /tmp/devops-ansi
+        owner: Ini
+        state: directory
+        mode: '0777'
+    - name: create file
+      file:
+        path: /tmp/ansi-class
+        state: touch
+        owner: Ini
+        mode: '0777'
