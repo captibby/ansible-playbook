@@ -16,14 +16,22 @@
         state: latest
         when: ansible_distribution  == "Ubuntu"
 
-    - name: Install tree
+    - name: Install httpd package
       yum:
-        name: tree
+        name: httpd
         state: present
+    - name: ensure httpd is started and enabled
+      service: 
+        name: httpd
+        state: started=yes enabled=yes
       when: ansible_distribution == "CentOS"
 
-    - name: Install tree
+    - name: Install Apache2 package
       apt: 
-        name: tree
+        name: apache2
         state: present
+    - name: ensure apache2 is started and enabled
+      service:
+        name: apache2
+        state: started=yes enabled=yes
       when: ansible_distribution  == "Ubuntu"

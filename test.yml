@@ -1,0 +1,73 @@
+---
+ - hosts: all
+#  ignore_errors:
+   become: yes
+   tasks:
+
+    - name: update server
+      yum:
+        name: "*"
+        state: latest
+      when: ansible_distribution == "CentOS"
+
+    - name: upgrade server
+      apt:
+        name: "*"
+        state: latest
+      when: ansible_distribution  == "Ubuntu"
+
+    - name: Install apache packages
+      yum:
+        name: httpd
+        state: present
+      when: ansible_distribution == "CentOS"
+
+    - name: ensure httpd is running
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+      when: ansible_distribution == "CentOS"
+
+    - name: Install firewalld
+      yum:
+        name: firewalld
+        state: latest
+      become: yes
+    - name: start firewalld
+      service:
+        name: firewalld
+        state: started
+        enabled: yes
+      become: yes
+    - name: enable port 80/tcp
+      firewalld:
+        zone: public
+        port: 80/tcp
+        permanent: true
+        state: enabled
+      become: yes
+      when: ansible_distribution == "CentOS"
+
+    - name: create index.html file
+      file:
+        path: /var/www/html/index.html 
+        state: touch 
+    - name: creating a file with content
+      copy: 
+        dest: "/var/www/html/index.html"  
+        content: |
+              Hello World
+      when: ansible_distribution == "CentOS"
+
+    - name: Install apache packages
+      apt:
+        name: apache2
+        state: present
+      when: ansible_distribution  == "Ubuntu"
+    - name: ensure apache2 running
+      service:
+        name: apache2
+        state: started
+        enabled: yes
+      when: ansible_distribution  == "Ubuntu"
